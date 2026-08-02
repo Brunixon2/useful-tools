@@ -670,14 +670,14 @@ button:hover{
 </div>
 
 <script>
-// Load custom sound file from your GitHub project
+// Custom Audio Sound Handler
 const clickSound = new Audio('./sounds/click.mp3'); 
 let isMuted = false;
 
 function playClickSound() {
     if (isMuted) return;
     
-    // Reset to start so rapid button clicks re-trigger the sound immediately
+    // Reset playhead so fast successive clicks always re-trigger sound instantly
     clickSound.currentTime = 0; 
     clickSound.play().catch(err => {
         console.log("Audio play blocked until user interacts with page:", err);
