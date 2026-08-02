@@ -670,33 +670,18 @@ button:hover{
 </div>
 
 <script>
-// Web Audio API Sound Generator
-let audioCtx;
+// Load custom sound file from your GitHub project
+const clickSound = new Audio('./sounds/click.mp3'); 
 let isMuted = false;
 
 function playClickSound() {
     if (isMuted) return;
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.03);
-
-    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
-
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.03);
+    
+    // Reset to start so rapid button clicks re-trigger the sound immediately
+    clickSound.currentTime = 0; 
+    clickSound.play().catch(err => {
+        console.log("Audio play blocked until user interacts with page:", err);
+    });
 }
 
 function toggleMute() {
