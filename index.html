@@ -618,7 +618,7 @@ button:hover{
             placeholder="Items"
             autofocus>
 
-        <div id="stackResult">0s0i</div>
+        <div id="stackResult">Stacks:0 Items:0</div>
     </div>
 
     <hr class="divider">
@@ -733,7 +733,7 @@ stackInput.addEventListener("input",()=>{
     let stacks=Math.floor(amount/64);
     let items=amount%64;
 
-    stackResult.textContent=`${stacks}s${items}i`;
+    stackResult.textContent=`Stacks:${stacks} Items:${items}`;
 });
 
 // Notepad Formatting & Active Button States
