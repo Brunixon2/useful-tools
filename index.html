@@ -33,7 +33,7 @@ body{
     z-index: 10;
 }
 
-/* Sound Toggle & Search in Top-Right Corner */
+/* Search & Sound Toggle in Top-Right Corner */
 .top-right-header {
     position: absolute;
     top: 20px;
@@ -148,12 +148,13 @@ body{
     color: #aaa;
 }
 
-/* Search Results Dropdown Panel */
+/* Search Results Dropdown Panel (Width aligned to search bar) */
 .search-dropdown {
     position: absolute;
     top: 50px;
-    right: 0;
-    width: 340px;
+    left: 0;
+    width: 100%;
+    min-width: 100%;
     max-height: 380px;
     background-color: #252525;
     border: 2px solid #444;
@@ -173,7 +174,7 @@ body{
     background: #333333;
     border: 1px solid #444;
     border-radius: 8px;
-    padding: 12px;
+    padding: 10px;
     margin-bottom: 8px;
     transition: background-color 0.2s ease;
 }
@@ -187,22 +188,22 @@ body{
 }
 
 .search-item-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
     color: #e17c24;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
 .search-item-desc {
-    font-size: 13px;
+    font-size: 12px;
     color: #ccc;
     line-height: 1.4;
 }
 
-/* Copy Icon Component */
+/* Compact Letter-Sized Copy Icon */
 .copy-btn {
     display: inline-flex;
     align-items: center;
@@ -211,9 +212,12 @@ body{
     background: #444;
     border: 1px solid #555;
     border-radius: 4px;
-    padding: 2px 5px;
-    font-size: 12px;
-    margin-left: 6px;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    line-height: 1;
+    margin-left: 4px;
+    padding: 0;
     transition: background-color 0.2s ease;
     vertical-align: middle;
 }
@@ -594,19 +598,19 @@ button:hover{
 </div>
 
 <div class="top-right-header">
-    <div class="icon-container">
-        <button class="circle-btn" id="soundToggleBtn" onclick="toggleMute()">
-            🔊
-        </button>
-        <div class="tooltip" id="soundTooltip">mute sounds</div>
-    </div>
-
     <div class="search-wrapper">
         <div class="search-box">
             <span class="search-icon">🔍</span>
             <input type="text" id="searchInput" class="search-input" placeholder="Search..." autocomplete="off">
         </div>
         <div id="searchDropdown" class="search-dropdown"></div>
+    </div>
+
+    <div class="icon-container">
+        <button class="circle-btn" id="soundToggleBtn" onclick="toggleMute()">
+            🔊
+        </button>
+        <div class="tooltip" id="soundTooltip">mute sounds</div>
     </div>
 </div>
 
