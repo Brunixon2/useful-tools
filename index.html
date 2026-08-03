@@ -33,13 +33,14 @@ body{
     z-index: 10;
 }
 
-/* Sound Toggle in Top-Right Corner */
+/* Sound Toggle & Search in Top-Right Corner */
 .top-right-header {
     position: absolute;
     top: 20px;
     right: 25px;
     display: flex;
     align-items: center;
+    gap: 12px;
     z-index: 10;
 }
 
@@ -100,6 +101,127 @@ body{
     object-fit: contain;
 }
 
+/* Search Bar Container & Styling */
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: #333333;
+    border: 2px solid #444444;
+    border-radius: 21px;
+    padding: 0 14px;
+    height: 42px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.search-box:hover, .search-box:focus-within {
+    background-color: #484848;
+    border-color: #666666;
+}
+
+.search-icon {
+    font-size: 16px;
+    margin-right: 8px;
+    user-select: none;
+}
+
+.search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 14px;
+    width: 140px;
+    transition: width 0.3s ease;
+}
+
+.search-input:focus {
+    width: 200px;
+}
+
+.search-input::placeholder {
+    color: #aaa;
+}
+
+/* Search Results Dropdown Panel */
+.search-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 340px;
+    max-height: 380px;
+    background-color: #252525;
+    border: 2px solid #444;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    overflow-y: auto;
+    display: none;
+    z-index: 30;
+    padding: 8px;
+}
+
+.search-dropdown.active {
+    display: block;
+}
+
+.search-item {
+    background: #333333;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.search-item:last-child {
+    margin-bottom: 0;
+}
+
+.search-item:hover {
+    background-color: #3d3d3d;
+}
+
+.search-item-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #e17c24;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.search-item-desc {
+    font-size: 13px;
+    color: #ccc;
+    line-height: 1.4;
+}
+
+/* Copy Icon Component */
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: #444;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 12px;
+    margin-left: 6px;
+    transition: background-color 0.2s ease;
+    vertical-align: middle;
+}
+
+.copy-btn:hover {
+    background: #666;
+}
+
 /* Hover Tooltips */
 .tooltip {
     visibility: hidden;
@@ -118,12 +240,18 @@ body{
     pointer-events: none;
     transition: opacity 0.2s ease, visibility 0.2s ease;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    z-index: 20;
+    z-index: 40;
 }
 
-.icon-container:hover .tooltip {
+.icon-container:hover .tooltip,
+.copy-wrapper:hover .tooltip {
     visibility: visible;
     opacity: 1;
+}
+
+.copy-wrapper {
+    position: relative;
+    display: inline-block;
 }
 
 /* Slide-up Create Mod Modal */
@@ -472,6 +600,14 @@ button:hover{
         </button>
         <div class="tooltip" id="soundTooltip">mute sounds</div>
     </div>
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search..." autocomplete="off">
+        </div>
+        <div id="searchDropdown" class="search-dropdown"></div>
+    </div>
 </div>
 
 <div id="modalOverlay" class="modal-overlay" onclick="closeCreateModal(event)">
@@ -705,6 +841,62 @@ document.addEventListener("click", (e) => {
     }
 });
 
+// Built-in Search Database & Logic
+const customSearchData = [
+    {
+        id: "minecraft_integer_limit",
+        title: "Minecraft Integer Limit",
+        description: `The integer limit is the 32-bit limit integer. And it represents a number: <b>2147483647</b> <span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('2147483647')">📋</button><span class="tooltip">Copy to clipboard</span></span>`
+    }
+];
+
+const searchInput = document.getElementById("searchInput");
+const searchDropdown = document.getElementById("searchDropdown");
+
+function renderSearchResults(filterText = "") {
+    const query = filterText.toLowerCase().trim();
+    const matches = customSearchData.filter(item => 
+        item.title.toLowerCase().includes(query) || 
+        item.description.toLowerCase().includes(query)
+    );
+
+    if (matches.length === 0) {
+        searchDropdown.innerHTML = `<div class="search-item" style="color:#aaa; text-align:center;">No matching results</div>`;
+        return;
+    }
+
+    searchDropdown.innerHTML = matches.map(item => `
+        <div class="search-item">
+            <div class="search-item-title">${item.title}</div>
+            <div class="search-item-desc">${item.description}</div>
+        </div>
+    `).join("");
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        playClickSound();
+    }).catch(err => {
+        console.error("Copy failed: ", err);
+    });
+}
+
+searchInput.addEventListener("focus", () => {
+    renderSearchResults(searchInput.value);
+    searchDropdown.classList.add("active");
+});
+
+searchInput.addEventListener("input", () => {
+    renderSearchResults(searchInput.value);
+    searchDropdown.classList.add("active");
+});
+
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".search-wrapper")) {
+        searchDropdown.classList.remove("active");
+    }
+});
+
 // Create Mod Modal Logic
 function openCreateModal() {
     document.getElementById("modalOverlay").classList.add("active");
@@ -712,6 +904,7 @@ function openCreateModal() {
 
 function closeCreateModal(event) {
     if (!event || event.target === document.getElementById("modalOverlay") || event.target.classList.contains("close-btn")) {
+        playClickSound();
         document.getElementById("modalOverlay").classList.remove("active");
     }
 }
