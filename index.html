@@ -98,6 +98,7 @@ body{
     width: 26px;
     height: 26px;
     object-fit: contain;
+    pointer-events: none;
 }
 
 .search-wrapper {
@@ -155,7 +156,7 @@ body{
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.65);
-    z-index: 8;
+    z-index: 12;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -171,6 +172,7 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 15;
 }
 
 .sidebar-content {
@@ -1072,12 +1074,14 @@ function toggleSidebar(forceState = null) {
     if (isOpen) {
         container.classList.add("open");
         overlay.classList.add("active");
-        arrowImg.src = "./images/arrow_up.png";
+        arrowImg.setAttribute("src", "./images/arrow_up.png");
+        arrowImg.setAttribute("alt", "Collapse Sidebar");
         tooltip.textContent = "collapse sidebar";
     } else {
         container.classList.remove("open");
         overlay.classList.remove("active");
-        arrowImg.src = "./images/arrow_down.png";
+        arrowImg.setAttribute("src", "./images/arrow_down.png");
+        arrowImg.setAttribute("alt", "Expand Sidebar");
         tooltip.textContent = "expand sidebar";
     }
 }
