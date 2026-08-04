@@ -850,12 +850,23 @@ document.addEventListener("click", (e) => {
     }
 });
 
-// Built-in Search Database & Logic using clipboard.png
+// Built-in Search Database & Logic
 const customSearchData = [
     {
         id: "minecraft_integer_limit",
         title: "Minecraft Integer Limit",
         description: `The integer limit is the 32-bit limit integer. And it represents a number: <b>2147483647</b> <span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('2147483647')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span>`
+    },
+    {
+        id: "custom_model_data_versions",
+        title: "Custom model data throught the versions",
+        description: `The custom model data is an item component that let's you customize the item based on the number that you define in a texture pack/mod.<br><br>` +
+            `<b>Version: 1.20.5 and Older</b><br>` +
+            `- /give @s stick{CustomModelData:123} <span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('/give @s stick{CustomModelData:123}')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span><br><br>` +
+            `<b>Version: 1.21 to 1.21.3</b><br>` +
+            `- /give @s stick[custom_model_data=123] <span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('/give @s stick[custom_model_data=123]')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span><br><br>` +
+            `<b>Version: 1.21.4 and Newer</b><br>` +
+            `- /give @s stick[custom_model_data={strings:[&quot;your_string&quot;]}] <span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('/give @s stick[custom_model_data={strings:[&quot;your_string&quot;]}]')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span>`
     }
 ];
 
