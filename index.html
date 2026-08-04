@@ -146,8 +146,18 @@ body{
     color: #aaa;
 }
 
-/* Arrow Button Inside Search Bar */
+/* Arrow Button Inside Search Bar with tight hover effect */
+.arrow-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+}
+
 .inside-arrow-btn {
+    width: 26px;
+    height: 26px;
     background: transparent;
     border: none;
     outline: none;
@@ -155,19 +165,18 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px;
     border-radius: 50%;
-    margin-left: 6px;
-    transition: transform 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .inside-arrow-btn:hover {
-    transform: scale(1.15);
+    background-color: #555555;
+    transform: scale(1.05);
 }
 
 .inside-arrow-btn img {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     object-fit: contain;
 }
 
@@ -276,6 +285,7 @@ body{
 }
 
 .icon-container:hover .tooltip,
+.arrow-container:hover .tooltip,
 .copy-wrapper:hover .tooltip {
     visibility: visible;
     opacity: 1;
@@ -755,9 +765,12 @@ button:hover{
         <div class="search-box">
             <img class="search-icon-img" src="./images/spyglass.png" alt="Search">
             <input type="text" id="searchInput" class="search-input" placeholder="Search..." autocomplete="off">
-            <button class="inside-arrow-btn" onclick="openGalleryPage()" title="Open Gallery">
-                <img src="./images/arrow_folded.png" alt="Open Gallery">
-            </button>
+            <div class="arrow-container">
+                <button class="inside-arrow-btn" onclick="openGalleryPage()">
+                    <img src="./images/arrow_folded.png" alt="Go to searches">
+                </button>
+                <div class="tooltip">Go to searches</div>
+            </div>
         </div>
         <div id="searchDropdown" class="search-dropdown"></div>
     </div>
