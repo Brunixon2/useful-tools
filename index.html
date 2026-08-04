@@ -156,13 +156,13 @@ body{
     position: absolute;
     top: 50px;
     left: 0;
-    width: 100%;
-    min-width: 100%;
+    width: 320px;
+    max-height: 450px;
     background-color: #252525;
     border: 2px solid #444;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-    overflow: visible;
+    overflow-y: auto;
     display: none;
     z-index: 30;
     padding: 8px;
@@ -206,7 +206,34 @@ body{
     line-height: 1.4;
 }
 
-/* Compact Letter-Sized Copy Icon with Image Support */
+/* Line Clamp for items > 5 lines */
+.search-item-desc.clamped {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.read-more-btn {
+    display: inline-block;
+    margin-top: 6px;
+    background: #444;
+    color: #e17c24;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.read-more-btn:hover {
+    background: #555;
+    color: #fff;
+}
+
+/* Compact Letter-Sized Copy Icon */
 .copy-btn {
     display: inline-flex;
     align-items: center;
@@ -264,6 +291,75 @@ body{
 .copy-wrapper {
     position: relative;
     display: inline-block;
+}
+
+/* Expanded Card Modal in Screen Center */
+.expand-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.expand-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.expand-modal-card {
+    background-color: #252525;
+    border: 2px solid #e17c24;
+    border-radius: 14px;
+    width: 500px;
+    max-width: 90vw;
+    max-height: 80vh;
+    padding: 20px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.8);
+    position: relative;
+    overflow-y: auto;
+    transform: scale(0.7);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 202;
+}
+
+.expand-modal-overlay.active .expand-modal-card {
+    transform: scale(1);
+}
+
+.expand-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid #444;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.expand-card-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #e17c24;
+}
+
+/* SVG Line connecting origin card to modal center */
+#connectingLineSvg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 201;
+    display: none;
 }
 
 /* Slide-up Create Mod Modal */
@@ -620,6 +716,20 @@ button:hover{
     </div>
 </div>
 
+<svg id="connectingLineSvg">
+    <line id="connectingLine" x1="0" y1="0" x2="0" y2="0" stroke="#e17c24" stroke-width="2" stroke-dasharray="6,6" />
+</svg>
+
+<div id="expandModalOverlay" class="expand-modal-overlay" onclick="closeExpandedModal()">
+    <div class="expand-modal-card" onclick="event.stopPropagation()">
+        <div class="expand-card-header">
+            <div id="expandTitle" class="expand-card-title"></div>
+            <button class="close-btn" onclick="closeExpandedModal()">✕ Close</button>
+        </div>
+        <div id="expandDesc" class="search-item-desc"></div>
+    </div>
+</div>
+
 <div id="modalOverlay" class="modal-overlay" onclick="closeCreateModal(event)">
     <div class="create-modal" onclick="event.stopPropagation()">
         <div class="modal-header">
@@ -850,23 +960,56 @@ document.addEventListener("click", (e) => {
     }
 });
 
-// Built-in Search Database & Logic
+// Helper function to build copy button html
+function makeCopyBtn(textToCopy) {
+    const escapedText = textToCopy.replace(/"/g, '&quot;');
+    return `<span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('${escapedText}')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span>`;
+}
+
+// Built-in Search Database
 const customSearchData = [
     {
         id: "minecraft_integer_limit",
         title: "Minecraft Integer Limit",
-        description: `The integer limit is the 32-bit limit integer. And it represents a number: <b>2147483647</b> <span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('2147483647')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span>`
+        description: `The integer limit is the 32-bit limit integer. And it represents a number: <b>2147483647</b> ${makeCopyBtn('2147483647')}`
     },
     {
         id: "custom_model_data_versions",
         title: "Custom model data throught the versions",
         description: `The custom model data is an item component that let's you customize the item based on the number that you define in a texture pack/mod.<br><br>` +
             `<b>Version: 1.20.5 and Older</b><br>` +
-            `- /give @s stick{CustomModelData:123} <span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('/give @s stick{CustomModelData:123}')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span><br><br>` +
+            `- /give @s stick{CustomModelData:123} ${makeCopyBtn('/give @s stick{CustomModelData:123}')}<br><br>` +
             `<b>Version: 1.21 to 1.21.3</b><br>` +
-            `- /give @s stick[custom_model_data=123] <span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('/give @s stick[custom_model_data=123]')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span><br><br>` +
+            `- /give @s stick[custom_model_data=123] ${makeCopyBtn('/give @s stick[custom_model_data=123]')}<br><br>` +
             `<b>Version: 1.21.4 and Newer</b><br>` +
-            `- /give @s stick[custom_model_data={strings:[&quot;your_string&quot;]}] <span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('/give @s stick[custom_model_data={strings:[&quot;your_string&quot;]}]')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span>`
+            `- /give @s stick[custom_model_data={strings:["your_string"]}] ${makeCopyBtn('/give @s stick[custom_model_data={strings:["your_string"]}]')}`
+    },
+    {
+        id: "pack_formats_versions",
+        title: "Pack Formats throught the versions",
+        description: `The minecraft pack formats are used when defining the pack.mcmeta file for datapacks/texture packs<br><br>` +
+            `<b>Versions: 1.13 - 1.14.4</b> Format: 4<br>` +
+            `<b>Versions: 1.15 - 1.16.1</b> Format: 5<br>` +
+            `<b>Versions: 1.16.2 - 1.16.5</b> Format: 6<br>` +
+            `<b>Versions: 1.17 - 1.17.1</b> Format: 7<br>` +
+            `<b>Versions: 1.18 - 1.18.1</b> Format: 8<br>` +
+            `<b>Versions: 1.18.2</b> Format: 9<br>` +
+            `<b>Versions: 1.19 - 1.19.3</b> Format: 10<br>` +
+            `<b>Versions: 1.19.4</b> Format: 12<br>` +
+            `<b>Versions: 1.20 - 1.20.1</b> Format: 15<br>` +
+            `<b>Versions: 1.20.2</b> Format: 18<br>` +
+            `<b>Versions: 1.20.3 - 1.20.4</b> Format: 26<br>` +
+            `<b>Versions: 1.20.5 - 1.20.6</b> Format: 41<br>` +
+            `<b>Versions: 1.21 - 1.21.1</b> Format: 48<br>` +
+            `<b>Versions: 1.21.2 - 1.21.3</b> Format: 57<br>` +
+            `<b>Versions: 1.21.4</b> Format: 61<br>` +
+            `<b>Versions: 1.21.5</b> Format: 71<br>` +
+            `<b>Versions: 1.21.6</b> Format: 80<br>` +
+            `<b>Versions: 1.21.7 - 1.21.8</b> Format: 81<br>` +
+            `<b>Versions: 1.21.9 - 1.21.10</b> Format: 88.0<br>` +
+            `<b>Versions: 1.21.11</b> Format: 94.1<br>` +
+            `<b>Versions: 26.1 - 26.1.2</b> Format: 101.1<br>` +
+            `<b>Versions: 26.2</b> Format: 107.1`
     }
 ];
 
@@ -885,12 +1028,58 @@ function renderSearchResults(filterText = "") {
         return;
     }
 
-    searchDropdown.innerHTML = matches.map(item => `
-        <div class="search-item">
-            <div class="search-item-title">${item.title}</div>
-            <div class="search-item-desc">${item.description}</div>
-        </div>
-    `).join("");
+    searchDropdown.innerHTML = matches.map(item => {
+        // Count line breaks to determine if > 5 lines
+        const lineBreakCount = (item.description.match(/<br\s*\/?>/gi) || []).length;
+        const isLong = lineBreakCount > 4 || item.description.length > 250;
+
+        return `
+            <div class="search-item" id="item-${item.id}">
+                <div class="search-item-title">${item.title}</div>
+                <div class="search-item-desc ${isLong ? 'clamped' : ''}">${item.description}</div>
+                ${isLong ? `<button class="read-more-btn" onclick="openExpandedModal('${item.id}')">Read More ↘</button>` : ''}
+            </div>
+        `;
+    }).join("");
+}
+
+// Center Modal & SVG Connecting Line Logic
+function openExpandedModal(itemId) {
+    playClickSound();
+    const itemData = customSearchData.find(i => i.id === itemId);
+    if (!itemData) return;
+
+    document.getElementById("expandTitle").innerHTML = itemData.title;
+    document.getElementById("expandDesc").innerHTML = itemData.description;
+
+    const sourceElem = document.getElementById(`item-${itemId}`);
+    const modalOverlay = document.getElementById("expandModalOverlay");
+    const svg = document.getElementById("connectingLineSvg");
+    const line = document.getElementById("connectingLine");
+
+    modalOverlay.classList.add("active");
+
+    if (sourceElem) {
+        const rect = sourceElem.getBoundingClientRect();
+        const startX = rect.left + rect.width / 2;
+        const startY = rect.top + rect.height / 2;
+        
+        const endX = window.innerWidth / 2;
+        const endY = window.innerHeight / 2;
+
+        line.setAttribute("x1", startX);
+        line.setAttribute("y1", startY);
+        line.setAttribute("x2", endX);
+        line.setAttribute("y2", endY);
+
+        svg.style.display = "block";
+    }
+}
+
+function closeExpandedModal() {
+    playClickSound();
+    document.getElementById("expandModalOverlay").classList.remove("active");
+    document.getElementById("connectingLineSvg").style.display = "none";
 }
 
 function copyToClipboard(text) {
@@ -912,7 +1101,7 @@ searchInput.addEventListener("input", () => {
 });
 
 document.addEventListener("click", (e) => {
-    if (!e.target.closest(".search-wrapper")) {
+    if (!e.target.closest(".search-wrapper") && !e.target.closest("#expandModalOverlay")) {
         searchDropdown.classList.remove("active");
     }
 });
@@ -1042,6 +1231,7 @@ document.addEventListener("keydown",(e)=>{
     if(e.key==="Escape"){
         playClickSound();
         clearCalc();
+        closeExpandedModal();
     }
 });
 </script>
