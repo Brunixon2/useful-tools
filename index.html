@@ -147,6 +147,51 @@ body{
     color: #aaa;
 }
 
+/* Sidebar & Overlay */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 8;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sidebar-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar-content {
+    position: absolute;
+    top: calc(100% + 5px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(-15px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.sidebar-container.open .sidebar-content {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
 .copy-btn {
     display: inline-flex;
     align-items: center;
@@ -717,6 +762,8 @@ button:hover{
 </head>
 <body>
 
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+
 <div class="app-header">
     <div class="brand-info">
         <img class="header-icon" src="./images/crafting_table.png" alt="Crafting Table">
@@ -747,11 +794,22 @@ button:hover{
         <div class="tooltip">Go to searches</div>
     </div>
 
-    <div class="icon-container">
-        <button class="circle-btn" id="soundToggleBtn" onclick="toggleMute()">
-            🔊
-        </button>
-        <div class="tooltip" id="soundTooltip">mute sounds</div>
+    <div class="sidebar-container" id="sidebarContainer">
+        <div class="icon-container">
+            <button class="circle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()">
+                <img id="sidebarArrowImg" src="./images/arrow_down.png" alt="Expand Sidebar">
+            </button>
+            <div class="tooltip" id="sidebarTooltip">expand sidebar</div>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="icon-container">
+                <button class="circle-btn" id="soundToggleBtn" onclick="toggleMute()">
+                    🔊
+                </button>
+                <div class="tooltip" id="soundTooltip">mute sounds</div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1000,6 +1058,27 @@ function toggleMute() {
     } else {
         btn.textContent = "🔊";
         tooltip.textContent = "mute sounds";
+    }
+}
+
+function toggleSidebar(forceState = null) {
+    const container = document.getElementById("sidebarContainer");
+    const overlay = document.getElementById("sidebarOverlay");
+    const arrowImg = document.getElementById("sidebarArrowImg");
+    const tooltip = document.getElementById("sidebarTooltip");
+
+    const isOpen = forceState !== null ? forceState : !container.classList.contains("open");
+
+    if (isOpen) {
+        container.classList.add("open");
+        overlay.classList.add("active");
+        arrowImg.src = "./images/arrow_up.png";
+        tooltip.textContent = "collapse sidebar";
+    } else {
+        container.classList.remove("open");
+        overlay.classList.remove("active");
+        arrowImg.src = "./images/arrow_down.png";
+        tooltip.textContent = "expand sidebar";
     }
 }
 
@@ -1331,6 +1410,8 @@ document.addEventListener("keydown",(e)=>{
         playClickSound();
         if (galleryPage.classList.contains("active")) {
             closeGalleryPage();
+        } else if (document.getElementById("sidebarContainer").classList.contains("open")) {
+            toggleSidebar(false);
         } else {
             clearCalc();
         }
