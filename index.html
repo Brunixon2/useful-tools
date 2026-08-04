@@ -101,7 +101,7 @@ body{
     object-fit: contain;
 }
 
-/* Search Bar Container & Styling */
+/* Tight Search Bar Container & Styling */
 .search-wrapper {
     position: relative;
     display: flex;
@@ -114,8 +114,8 @@ body{
     background-color: #333333;
     border: 2px solid #444444;
     border-radius: 21px;
-    padding: 0 8px 0 14px;
-    height: 42px;
+    padding: 0 6px 0 10px;
+    height: 38px;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
@@ -125,10 +125,10 @@ body{
 }
 
 .search-icon-img {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     object-fit: contain;
-    margin-right: 8px;
+    margin-right: 6px;
     user-select: none;
     pointer-events: none;
 }
@@ -138,26 +138,26 @@ body{
     border: none;
     outline: none;
     color: white;
-    font-size: 14px;
-    width: 140px;
+    font-size: 13px;
+    width: 110px; /* Restored initial tight width */
 }
 
 .search-input::placeholder {
     color: #aaa;
 }
 
-/* Arrow Button Inside Search Bar with tight hover effect */
+/* Arrow Button Inside Search Bar */
 .arrow-container {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 4px;
+    margin-left: 2px;
 }
 
 .inside-arrow-btn {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     background: transparent;
     border: none;
     outline: none;
@@ -175,15 +175,15 @@ body{
 }
 
 .inside-arrow-btn img {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     object-fit: contain;
 }
 
 /* Search Results Floating Panel */
 .search-dropdown {
     position: absolute;
-    top: 50px;
+    top: 46px;
     left: 0;
     width: 100%;
     min-width: 100%;
@@ -206,13 +206,8 @@ body{
     border: 1px solid #444;
     border-radius: 8px;
     padding: 10px;
-    margin-bottom: 8px;
     position: relative;
     transition: background-color 0.2s ease;
-}
-
-.search-item:last-child {
-    margin-bottom: 0;
 }
 
 .search-item:hover {
@@ -235,7 +230,7 @@ body{
     line-height: 1.4;
 }
 
-/* Compact Letter-Sized Copy Icon with Image Support */
+/* Compact Letter-Sized Copy Icon */
 .copy-btn {
     display: inline-flex;
     align-items: center;
@@ -261,6 +256,48 @@ body{
     height: 100%;
     object-fit: contain;
     display: block;
+}
+
+/* Coordinate Converter Box Inside Search Items */
+.coord-converter-box {
+    margin-top: 10px;
+    padding: 10px;
+    background: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.coord-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.coord-label {
+    width: 90px;
+    color: #e17c24;
+    font-weight: bold;
+}
+
+.coord-inputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.coord-input {
+    width: 65px;
+    background: #2b2b2b;
+    border: 1px solid #555;
+    color: white;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 12px;
+    text-align: center;
 }
 
 /* Hover Tooltips */
@@ -678,14 +715,13 @@ button:hover{
     color: #aaa;
 }
 
-/* Gallery Grid Container with vertical slider touching right edge */
+/* Gallery Grid Container */
 .gallery-body {
     flex: 1;
     overflow-y: scroll;
     padding: 25px 30px;
 }
 
-/* Custom scrollbar touching right border */
 .gallery-body::-webkit-scrollbar {
     width: 10px;
 }
@@ -702,7 +738,7 @@ button:hover{
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 20px;
     width: 100%;
 }
@@ -1026,7 +1062,7 @@ function toggleMute() {
     }
 }
 
-// Global click event listener to play sound on buttons and close elements
+// Global click event listener to play sound on buttons
 document.addEventListener("click", (e) => {
     if (e.target.closest("button") || e.target.closest(".circle-btn") || e.target.closest(".tool-btn") || e.target.closest(".close-btn") || e.target.closest(".inside-arrow-btn")) {
         playClickSound();
@@ -1037,6 +1073,45 @@ document.addEventListener("click", (e) => {
 function makeCopyBtn(textToCopy) {
     const escapedText = textToCopy.replace(/"/g, '&quot;');
     return `<span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('${escapedText}')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span>`;
+}
+
+// Interactive Nether and Overworld Converter Component
+function buildCoordConverterHTML() {
+    return `
+        <div class="coord-converter-box">
+            <div style="font-weight:bold; color:#e17c24; font-size:12px;">Nether & Overworld Coordinates Converter</div>
+            <div class="coord-row">
+                <span class="coord-label">Overworld:</span>
+                <div class="coord-inputs">
+                    X: <input type="number" id="ow_x" class="coord-input" placeholder="0" oninput="convertCoords('ow')">
+                    Z: <input type="number" id="ow_z" class="coord-input" placeholder="0" oninput="convertCoords('ow')">
+                </div>
+            </div>
+            <div class="coord-row">
+                <span class="coord-label">Nether:</span>
+                <div class="coord-inputs">
+                    X: <input type="number" id="nether_x" class="coord-input" placeholder="0" oninput="convertCoords('nether')">
+                    Z: <input type="number" id="nether_z" class="coord-input" placeholder="0" oninput="convertCoords('nether')">
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function convertCoords(source) {
+    if (source === 'ow') {
+        const owX = parseFloat(document.getElementById('ow_x').value);
+        const owZ = parseFloat(document.getElementById('ow_z').value);
+        
+        document.getElementById('nether_x').value = isNaN(owX) ? '' : Math.floor(owX / 8);
+        document.getElementById('nether_z').value = isNaN(owZ) ? '' : Math.floor(owZ / 8);
+    } else if (source === 'nether') {
+        const nX = parseFloat(document.getElementById('nether_x').value);
+        const nZ = parseFloat(document.getElementById('nether_z').value);
+        
+        document.getElementById('ow_x').value = isNaN(nX) ? '' : Math.round(nX * 8);
+        document.getElementById('ow_z').value = isNaN(nZ) ? '' : Math.round(nZ * 8);
+    }
 }
 
 // Built-in Search Database
@@ -1083,9 +1158,27 @@ const customSearchData = [
             `- /give @s stick[custom_model_data={strings:["your_string"]}] ${makeCopyBtn('/give @s stick[custom_model_data={strings:["your_string"]}]')}`
     },
     {
+        id: "light_levels_mob_spawning",
+        title: "Light Levels & Mob spawning",
+        description: `Hostile mobs require specific block light levels to spawn naturally:<br><br>` +
+            `<b>Versions 1.18 and Newer:</b><br>` +
+            `- Mobs spawn ONLY at <b>Block Light Level 0</b>.<br>` +
+            `- Artificial light sources emitting level 1+ completely stop hostile mob spawns.<br><br>` +
+            `<b>Versions 1.17 and Older:</b><br>` +
+            `- Mobs spawn at <b>Block Light Level 7 or lower</b>.<br><br>` +
+            `<b>Light Block Command:</b><br>` +
+            `- <code>/give @s light_block 1 15</code> ${makeCopyBtn('/give @s light_block 1 15')}`
+    },
+    {
         id: "minecraft_integer_limit",
         title: "Minecraft Integer Limit",
         description: `The integer limit is the 32-bit limit integer. And it represents a number: <b>2147483647</b> ${makeCopyBtn('2147483647')}`
+    },
+    {
+        id: "nether_coordinates_formula",
+        title: "Nether Coordinates Formula",
+        description: `Minecraft overworld coordinates are Are divided by 8 to create a nether coordinate, and the other way around.` +
+            buildCoordConverterHTML()
     },
     {
         id: "pack_formats_versions",
@@ -1121,7 +1214,7 @@ function getSortedSearchData() {
     return [...customSearchData].sort((a, b) => a.title.localeCompare(b.title));
 }
 
-// Top-Right Dropdown Search Handling
+// Top-Right Dropdown Search Handling (Only Displays 1 Recommendation)
 const searchInput = document.getElementById("searchInput");
 const searchDropdown = document.getElementById("searchDropdown");
 
@@ -1131,12 +1224,12 @@ function renderSearchResults(filterText = "") {
     let matches = [];
 
     if (query === "") {
-        matches = sortedData.slice(0, 2);
+        matches = sortedData.slice(0, 1); // Strictly displays 1 recommendation
     } else {
         matches = sortedData.filter(item => 
             item.title.toLowerCase().includes(query) || 
             item.description.toLowerCase().includes(query)
-        );
+        ).slice(0, 1); // Strictly displays 1 matching recommendation
     }
 
     if (matches.length === 0) {
