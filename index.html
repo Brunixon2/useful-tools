@@ -139,7 +139,7 @@ body{
     outline: none;
     color: white;
     font-size: 13px;
-    width: 110px; /* Restored initial tight width */
+    width: 110px; /* Tight restored width */
 }
 
 .search-input::placeholder {
@@ -258,7 +258,7 @@ body{
     display: block;
 }
 
-/* Coordinate Converter Box Inside Search Items */
+/* Coordinate Converter Box Inside Searches */
 .coord-converter-box {
     margin-top: 10px;
     padding: 10px;
@@ -286,16 +286,16 @@ body{
 .coord-inputs {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
 }
 
 .coord-input {
-    width: 65px;
+    width: 60px;
     background: #2b2b2b;
     border: 1px solid #555;
     color: white;
     border-radius: 4px;
-    padding: 3px 6px;
+    padding: 2px 4px;
     font-size: 12px;
     text-align: center;
 }
@@ -1075,11 +1075,11 @@ function makeCopyBtn(textToCopy) {
     return `<span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('${escapedText}')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span>`;
 }
 
-// Interactive Nether and Overworld Converter Component
+// Interactive Nether and Overworld Converter Box Generator
 function buildCoordConverterHTML() {
     return `
         <div class="coord-converter-box">
-            <div style="font-weight:bold; color:#e17c24; font-size:12px;">Nether & Overworld Coordinates Converter</div>
+            <div style="font-weight:bold; color:#e17c24; margin-bottom:2px;">Nether & Overworld Coordinates Converter</div>
             <div class="coord-row">
                 <span class="coord-label">Overworld:</span>
                 <div class="coord-inputs">
@@ -1158,16 +1158,22 @@ const customSearchData = [
             `- /give @s stick[custom_model_data={strings:["your_string"]}] ${makeCopyBtn('/give @s stick[custom_model_data={strings:["your_string"]}]')}`
     },
     {
-        id: "light_levels_mob_spawning",
-        title: "Light Levels & Mob spawning",
-        description: `Hostile mobs require specific block light levels to spawn naturally:<br><br>` +
-            `<b>Versions 1.18 and Newer:</b><br>` +
-            `- Mobs spawn ONLY at <b>Block Light Level 0</b>.<br>` +
-            `- Artificial light sources emitting level 1+ completely stop hostile mob spawns.<br><br>` +
-            `<b>Versions 1.17 and Older:</b><br>` +
-            `- Mobs spawn at <b>Block Light Level 7 or lower</b>.<br><br>` +
-            `<b>Light Block Command:</b><br>` +
-            `- <code>/give @s light_block 1 15</code> ${makeCopyBtn('/give @s light_block 1 15')}`
+        id: "entity_spawn_rules",
+        title: "Entity Spawn Rules",
+        description: `<b>Hostile Mobs (Cap: 70):</b><br>` +
+            `- Spawns only at <b>Block Light = 0</b>.<br>` +
+            `- Despawns when far from players.<br><br>` +
+            `<b>Passive Mobs (Cap: 10):</b><br>` +
+            `- Spawns at <b>Light Level 9+</b> on Grass.<br>` +
+            `- Mostly chunk gen; breeding bypasses cap.<br><br>` +
+            `<b>Ambient Mobs (Cap: 15):</b><br>` +
+            `- Bats/etc. Spawn at light level ≤ 7.<br><br>` +
+            `<b>Water Mobs (Cap: 5 Surface / 20 Deep):</b><br>` +
+            `- Squid, Fish, Axolotls. Spawn in liquid.<br><br>` +
+            `<b>Player Distance Spheres:</b><br>` +
+            `- 24–32b: Mobs spawn & wander.<br>` +
+            `- 32–128b: Hostiles freeze & slowly despawn.<br>` +
+            `- 128+b: Hostiles despawn <b>instantly</b>.`
     },
     {
         id: "minecraft_integer_limit",
@@ -1214,7 +1220,7 @@ function getSortedSearchData() {
     return [...customSearchData].sort((a, b) => a.title.localeCompare(b.title));
 }
 
-// Top-Right Dropdown Search Handling (Only Displays 1 Recommendation)
+// Top-Right Dropdown Search Handling (Displays 1 recommendation)
 const searchInput = document.getElementById("searchInput");
 const searchDropdown = document.getElementById("searchDropdown");
 
@@ -1224,12 +1230,12 @@ function renderSearchResults(filterText = "") {
     let matches = [];
 
     if (query === "") {
-        matches = sortedData.slice(0, 1); // Strictly displays 1 recommendation
+        matches = sortedData.slice(0, 1);
     } else {
         matches = sortedData.filter(item => 
             item.title.toLowerCase().includes(query) || 
             item.description.toLowerCase().includes(query)
-        ).slice(0, 1); // Strictly displays 1 matching recommendation
+        ).slice(0, 1);
     }
 
     if (matches.length === 0) {
