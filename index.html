@@ -594,6 +594,38 @@ button:hover{
     left: 25px;
     top: 50%;
     transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.recommended-chip {
+    background-color: #333333;
+    border: 1px solid #444444;
+    border-radius: 18px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: #e17c24;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+}
+
+.recommended-chip:hover {
+    background-color: #444444;
+    border-color: #e17c24;
+    transform: scale(1.03);
+}
+
+.recommended-label {
+    color: #aaa;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-right: 2px;
 }
 
 .gallery-search-box {
@@ -725,11 +757,17 @@ button:hover{
 
 <div id="galleryPage" class="gallery-page">
     <div class="gallery-header">
-        <div class="home-btn-container icon-container">
-            <button class="circle-btn" onclick="closeGalleryPage()">
-                <img src="./images/home_button.png" alt="Home">
-            </button>
-            <div class="tooltip">Back to main page</div>
+        <div class="home-btn-container">
+            <div class="icon-container">
+                <button class="circle-btn" onclick="closeGalleryPage()">
+                    <img src="./images/home_button.png" alt="Home">
+                </button>
+                <div class="tooltip">Back to main page</div>
+            </div>
+
+            <div class="recommended-chip" onclick="applyRecommendedSearch('Nether Coordinates Formula')">
+                <span class="recommended-label">Recommended:</span> Nether Coordinates Converter
+            </div>
         </div>
 
         <div class="gallery-search-box">
@@ -966,7 +1004,7 @@ function toggleMute() {
 }
 
 document.addEventListener("click", (e) => {
-    if (e.target.closest("button") || e.target.closest(".circle-btn") || e.target.closest(".tool-btn") || e.target.closest(".close-btn") || e.target.closest(".search-box")) {
+    if (e.target.closest("button") || e.target.closest(".circle-btn") || e.target.closest(".tool-btn") || e.target.closest(".close-btn") || e.target.closest(".search-box") || e.target.closest(".recommended-chip")) {
         playClickSound();
     }
 });
@@ -1139,6 +1177,11 @@ function openGalleryPage() {
 
 function closeGalleryPage() {
     galleryPage.classList.remove("active");
+}
+
+function applyRecommendedSearch(term) {
+    gallerySearchInput.value = term;
+    renderGallery(term);
 }
 
 function renderGallery(filterText = "") {
