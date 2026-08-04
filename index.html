@@ -1220,19 +1220,20 @@ function getSortedSearchData() {
     return [...customSearchData].sort((a, b) => a.title.localeCompare(b.title));
 }
 
-// Top-Right Dropdown Search Handling (Displays 1 recommendation)
+// Top-Right Dropdown Search Handling (Default recommendation: Nether Coordinates Converter)
 const searchInput = document.getElementById("searchInput");
 const searchDropdown = document.getElementById("searchDropdown");
 
 function renderSearchResults(filterText = "") {
     const query = filterText.toLowerCase().trim();
-    const sortedData = getSortedSearchData();
     let matches = [];
 
     if (query === "") {
-        matches = sortedData.slice(0, 1);
+        // Defaults specifically to the Nether Coordinates Formula card
+        const netherItem = customSearchData.find(item => item.id === "nether_coordinates_formula");
+        matches = netherItem ? [netherItem] : getSortedSearchData().slice(0, 1);
     } else {
-        matches = sortedData.filter(item => 
+        matches = getSortedSearchData().filter(item => 
             item.title.toLowerCase().includes(query) || 
             item.description.toLowerCase().includes(query)
         ).slice(0, 1);
