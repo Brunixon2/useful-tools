@@ -1073,12 +1073,14 @@ function toggleSidebar(forceState = null) {
 
     if (isOpen) {
         container.classList.add("open");
+        container.style.zIndex = "25";
         overlay.classList.add("active");
         arrowImg.setAttribute("src", "./images/arrow_up.png");
         arrowImg.setAttribute("alt", "Collapse Sidebar");
         tooltip.textContent = "collapse sidebar";
     } else {
         container.classList.remove("open");
+        container.style.zIndex = "15";
         overlay.classList.remove("active");
         arrowImg.setAttribute("src", "./images/arrow_down.png");
         arrowImg.setAttribute("alt", "Expand Sidebar");
