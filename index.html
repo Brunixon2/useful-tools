@@ -156,13 +156,13 @@ body{
     position: absolute;
     top: 50px;
     left: 0;
-    width: 320px;
-    max-height: 450px;
+    width: 100%;
+    min-width: 100%;
     background-color: #252525;
     border: 2px solid #444;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-    overflow-y: auto;
+    overflow: visible;
     display: none;
     z-index: 30;
     padding: 8px;
@@ -908,10 +908,18 @@ const searchDropdown = document.getElementById("searchDropdown");
 
 function renderSearchResults(filterText = "") {
     const query = filterText.toLowerCase().trim();
-    const matches = customSearchData.filter(item => 
-        item.title.toLowerCase().includes(query) || 
-        item.description.toLowerCase().includes(query)
-    );
+    let matches = [];
+
+    if (query === "") {
+        // Only display 2 recommended items when typing nothing
+        matches = customSearchData.slice(0, 2);
+    } else {
+        // Search full database when typing
+        matches = customSearchData.filter(item => 
+            item.title.toLowerCase().includes(query) || 
+            item.description.toLowerCase().includes(query)
+        );
+    }
 
     if (matches.length === 0) {
         searchDropdown.innerHTML = `<div class="search-item" style="color:#aaa; text-align:center;">No matching results</div>`;
