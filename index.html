@@ -206,34 +206,7 @@ body{
     line-height: 1.4;
 }
 
-/* Line Clamp for items > 5 lines */
-.search-item-desc.clamped {
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.read-more-btn {
-    display: inline-block;
-    margin-top: 6px;
-    background: #444;
-    color: #e17c24;
-    border: 1px solid #555;
-    border-radius: 4px;
-    padding: 3px 8px;
-    font-size: 11px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.read-more-btn:hover {
-    background: #555;
-    color: #fff;
-}
-
-/* Compact Letter-Sized Copy Icon */
+/* Compact Letter-Sized Copy Icon with Image Support */
 .copy-btn {
     display: inline-flex;
     align-items: center;
@@ -291,75 +264,6 @@ body{
 .copy-wrapper {
     position: relative;
     display: inline-block;
-}
-
-/* Expanded Card Modal in Screen Center */
-.expand-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.expand-modal-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.expand-modal-card {
-    background-color: #252525;
-    border: 2px solid #e17c24;
-    border-radius: 14px;
-    width: 500px;
-    max-width: 90vw;
-    max-height: 80vh;
-    padding: 20px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.8);
-    position: relative;
-    overflow-y: auto;
-    transform: scale(0.7);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 202;
-}
-
-.expand-modal-overlay.active .expand-modal-card {
-    transform: scale(1);
-}
-
-.expand-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 2px solid #444;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-.expand-card-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #e17c24;
-}
-
-/* SVG Line connecting origin card to modal center */
-#connectingLineSvg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 201;
-    display: none;
 }
 
 /* Slide-up Create Mod Modal */
@@ -716,20 +620,6 @@ button:hover{
     </div>
 </div>
 
-<svg id="connectingLineSvg">
-    <line id="connectingLine" x1="0" y1="0" x2="0" y2="0" stroke="#e17c24" stroke-width="2" stroke-dasharray="6,6" />
-</svg>
-
-<div id="expandModalOverlay" class="expand-modal-overlay" onclick="closeExpandedModal()">
-    <div class="expand-modal-card" onclick="event.stopPropagation()">
-        <div class="expand-card-header">
-            <div id="expandTitle" class="expand-card-title"></div>
-            <button class="close-btn" onclick="closeExpandedModal()">✕ Close</button>
-        </div>
-        <div id="expandDesc" class="search-item-desc"></div>
-    </div>
-</div>
-
 <div id="modalOverlay" class="modal-overlay" onclick="closeCreateModal(event)">
     <div class="create-modal" onclick="event.stopPropagation()">
         <div class="modal-header">
@@ -966,7 +856,7 @@ function makeCopyBtn(textToCopy) {
     return `<span class="copy-wrapper"><button class="copy-btn" onclick="copyToClipboard('${escapedText}')"><img src="./images/clipboard.png" alt="Copy" class="copy-icon-img"></button><span class="tooltip">Copy to clipboard</span></span>`;
 }
 
-// Built-in Search Database
+// Built-in Search Database & Logic
 const customSearchData = [
     {
         id: "minecraft_integer_limit",
@@ -987,7 +877,7 @@ const customSearchData = [
     {
         id: "pack_formats_versions",
         title: "Pack Formats throught the versions",
-        description: `The minecraft pack formats are used when defining the pack.mcmeta file for datapacks/texture packs<br><br>` +
+        description: `The minecraft pack formats are used when defining the pack.mcmeta file for datpacks/texture packs<br><br>` +
             `<b>Versions: 1.13 - 1.14.4</b> Format: 4<br>` +
             `<b>Versions: 1.15 - 1.16.1</b> Format: 5<br>` +
             `<b>Versions: 1.16.2 - 1.16.5</b> Format: 6<br>` +
@@ -1028,58 +918,12 @@ function renderSearchResults(filterText = "") {
         return;
     }
 
-    searchDropdown.innerHTML = matches.map(item => {
-        // Count line breaks to determine if > 5 lines
-        const lineBreakCount = (item.description.match(/<br\s*\/?>/gi) || []).length;
-        const isLong = lineBreakCount > 4 || item.description.length > 250;
-
-        return `
-            <div class="search-item" id="item-${item.id}">
-                <div class="search-item-title">${item.title}</div>
-                <div class="search-item-desc ${isLong ? 'clamped' : ''}">${item.description}</div>
-                ${isLong ? `<button class="read-more-btn" onclick="openExpandedModal('${item.id}')">Read More ↘</button>` : ''}
-            </div>
-        `;
-    }).join("");
-}
-
-// Center Modal & SVG Connecting Line Logic
-function openExpandedModal(itemId) {
-    playClickSound();
-    const itemData = customSearchData.find(i => i.id === itemId);
-    if (!itemData) return;
-
-    document.getElementById("expandTitle").innerHTML = itemData.title;
-    document.getElementById("expandDesc").innerHTML = itemData.description;
-
-    const sourceElem = document.getElementById(`item-${itemId}`);
-    const modalOverlay = document.getElementById("expandModalOverlay");
-    const svg = document.getElementById("connectingLineSvg");
-    const line = document.getElementById("connectingLine");
-
-    modalOverlay.classList.add("active");
-
-    if (sourceElem) {
-        const rect = sourceElem.getBoundingClientRect();
-        const startX = rect.left + rect.width / 2;
-        const startY = rect.top + rect.height / 2;
-        
-        const endX = window.innerWidth / 2;
-        const endY = window.innerHeight / 2;
-
-        line.setAttribute("x1", startX);
-        line.setAttribute("y1", startY);
-        line.setAttribute("x2", endX);
-        line.setAttribute("y2", endY);
-
-        svg.style.display = "block";
-    }
-}
-
-function closeExpandedModal() {
-    playClickSound();
-    document.getElementById("expandModalOverlay").classList.remove("active");
-    document.getElementById("connectingLineSvg").style.display = "none";
+    searchDropdown.innerHTML = matches.map(item => `
+        <div class="search-item">
+            <div class="search-item-title">${item.title}</div>
+            <div class="search-item-desc">${item.description}</div>
+        </div>
+    `).join("");
 }
 
 function copyToClipboard(text) {
@@ -1101,7 +945,7 @@ searchInput.addEventListener("input", () => {
 });
 
 document.addEventListener("click", (e) => {
-    if (!e.target.closest(".search-wrapper") && !e.target.closest("#expandModalOverlay")) {
+    if (!e.target.closest(".search-wrapper")) {
         searchDropdown.classList.remove("active");
     }
 });
@@ -1231,7 +1075,6 @@ document.addEventListener("keydown",(e)=>{
     if(e.key==="Escape"){
         playClickSound();
         clearCalc();
-        closeExpandedModal();
     }
 });
 </script>
