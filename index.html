@@ -1489,7 +1489,8 @@ const customSearchData = [
 ];
 
 function getSortedSearchData() {
-    return [...customSearchData].sort((a, b) => a.title.localeCompare(b.title));
+    // Sorts search items by description length from longest to shortest
+    return [...customSearchData].sort((a, b) => b.description.length - a.description.length);
 }
 
 function copyToClipboard(text) {
