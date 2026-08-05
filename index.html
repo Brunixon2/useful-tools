@@ -1367,7 +1367,7 @@ hoverTriggers.forEach(item => {
 document.addEventListener("click", (e) => {
     const container = document.getElementById("sidebarContainer");
     
-    if (isSidebarOpen && !container.contains(e.target)) {
+    if (isSidebarOpen && !e.composedPath().includes(container)) {
         toggleSidebar(false);
         overlay.classList.remove("active");
     }
