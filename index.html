@@ -138,7 +138,7 @@ body.light-theme .gallery-card-desc {
     color: #333333;
 }
 
-/* iOS Glass Style Integration */
+/* Upgraded Liquid Glass Style Integration */
 body.ios-glass .circle-btn,
 body.ios-glass .search-box,
 body.ios-glass .gallery-search-box,
@@ -148,11 +148,12 @@ body.ios-glass .notepad-section,
 body.ios-glass .gallery-card,
 body.ios-glass .create-modal,
 body.ios-glass .gallery-header {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)) !important;
+    backdrop-filter: blur(20px) saturate(210%);
+    -webkit-backdrop-filter: blur(20px) saturate(210%);
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
 }
 
 body.ios-glass.light-theme .circle-btn,
@@ -164,16 +165,17 @@ body.ios-glass.light-theme .notepad-section,
 body.ios-glass.light-theme .gallery-card,
 body.ios-glass.light-theme .create-modal,
 body.ios-glass.light-theme .gallery-header {
-    background: rgba(255, 255, 255, 0.45) !important;
-    border: 1px solid rgba(255, 255, 255, 0.6) !important;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.25)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.7) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
 }
 
 body.ios-glass .circle-btn:hover,
 body.ios-glass .search-box:hover,
 body.ios-glass .tool-btn:hover,
 body.ios-glass button:not(.equal):not(.clear):hover {
-    background: rgba(255, 255, 255, 0.15) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08)) !important;
     transform: scale(1.04);
 }
 
@@ -991,9 +993,9 @@ button:hover{
 
             <div class="icon-container">
                 <button class="circle-btn" id="styleToggleBtn" onclick="toggleButtonStyle()">
-                    💧
+                    <img id="styleToggleImg" src="./images/buttons_normal.png" alt="Liquid Glass Style">
                 </button>
-                <div class="tooltip" id="styleTooltip">switch to ios glass style</div>
+                <div class="tooltip" id="styleTooltip">switch to liquid glass style</div>
             </div>
         </div>
     </div>
@@ -1267,14 +1269,17 @@ function toggleThemeColor() {
 
 function toggleButtonStyle() {
     isIosGlass = !isIosGlass;
+    const styleImg = document.getElementById("styleToggleImg");
     const styleTooltip = document.getElementById("styleTooltip");
 
     if (isIosGlass) {
         document.body.classList.add("ios-glass");
+        styleImg.src = "./images/buttons_liquid_glass.png";
         styleTooltip.textContent = "switch to normal style";
     } else {
         document.body.classList.remove("ios-glass");
-        styleTooltip.textContent = "switch to ios glass style";
+        styleImg.src = "./images/buttons_normal.png";
+        styleTooltip.textContent = "switch to liquid glass style";
     }
 }
 
