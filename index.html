@@ -1117,7 +1117,7 @@ button:hover{
                     <tr>
                         <td>
                             <div class="item-cell">
-                                <img class="item-icon" src="./images/small_water_wheel.png" alt="Small Water Wheel">
+                                <img class="item-icon" src="./images/water_wheel.png" alt="Small Water Wheel">
                                 <span>Small Water Wheel</span>
                             </div>
                         </td>
@@ -1350,7 +1350,6 @@ function toggleButtonStyle() {
 
 function toggleSidebar(forceState = null) {
     const container = document.getElementById("sidebarContainer");
-    const overlay = document.getElementById("sidebarOverlay");
     const arrowImg = document.getElementById("sidebarArrowImg");
     const tooltip = document.getElementById("sidebarTooltip");
 
@@ -1359,12 +1358,10 @@ function toggleSidebar(forceState = null) {
 
     if (isOpen) {
         container.classList.add("open");
-        overlay.classList.add("active");
         arrowImg.src = "./images/arrow_up.png";
         tooltip.textContent = "collapse sidebar";
     } else {
         container.classList.remove("open");
-        overlay.classList.remove("active");
         arrowImg.src = "./images/arrow_down.png";
         tooltip.textContent = "expand sidebar";
     }
@@ -1375,18 +1372,22 @@ const overlay = document.getElementById("sidebarOverlay");
 
 hoverTriggers.forEach(item => {
     item.addEventListener("mouseenter", () => {
-        if (!isSidebarOpen) {
-            overlay.classList.add("active");
-        }
+        overlay.classList.add("active");
     });
     item.addEventListener("mouseleave", () => {
-        if (!isSidebarOpen) {
-            overlay.classList.remove("active");
-        }
+        overlay.classList.remove("active");
     });
 });
 
 document.addEventListener("click", (e) => {
+    const container = document.getElementById("sidebarContainer");
+    
+    // Close sidebar and overlay if clicking outside of it while it's open
+    if (isSidebarOpen && !container.contains(e.target)) {
+        toggleSidebar(false);
+        overlay.classList.remove("active");
+    }
+
     if (e.target.closest("button") || e.target.closest(".circle-btn") || e.target.closest(".tool-btn") || e.target.closest(".close-btn") || e.target.closest(".search-box") || e.target.closest(".recommended-chip")) {
         playClickSound();
     }
