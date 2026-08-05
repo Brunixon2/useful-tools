@@ -323,24 +323,6 @@ body.ios-glass button:not(.equal):not(.clear):hover {
     color: #aaa;
 }
 
-.sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.65);
-    z-index: 15;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.sidebar-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
 .sidebar-container {
     position: relative;
     display: flex;
@@ -968,8 +950,6 @@ button:hover{
 </head>
 <body>
 
-<div id="sidebarOverlay" class="sidebar-overlay"></div>
-
 <div class="app-header">
     <div class="brand-info">
         <img class="header-icon" src="./images/crafting_table.png" alt="Crafting Table">
@@ -1009,43 +989,43 @@ button:hover{
         </div>
 
         <div class="sidebar-content" id="sidebarContent">
-            <div class="icon-container hover-trigger">
+            <div class="icon-container">
                 <button class="circle-btn" id="soundToggleBtn" onclick="toggleMute()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                 </button>
                 <div class="tooltip" id="soundTooltip">mute sounds</div>
             </div>
             
-            <div class="icon-container hover-trigger">
+            <div class="icon-container">
                 <button class="circle-btn" id="themeToggleBtn" onclick="toggleThemeColor()">
                     <span id="themeSquare" class="color-square-black"></span>
                 </button>
                 <div class="tooltip" id="themeTooltip">switch to light theme</div>
             </div>
 
-            <div class="icon-container hover-trigger">
+            <div class="icon-container">
                 <button class="circle-btn" id="styleToggleBtn" onclick="toggleButtonStyle()">
                     <img id="styleToggleImg" src="./images/buttons_normal.png" alt="Liquid Glass Style">
                 </button>
                 <div class="tooltip" id="styleTooltip">switch to liquid glass style</div>
             </div>
 
-            <div class="icon-container hover-trigger">
+            <div class="icon-container">
                 <button class="circle-btn"></button>
                 <div class="tooltip">COMING SOON</div>
             </div>
 
-            <div class="icon-container hover-trigger">
+            <div class="icon-container">
                 <button class="circle-btn"></button>
                 <div class="tooltip">COMING SOON</div>
             </div>
 
-            <div class="icon-container hover-trigger">
+            <div class="icon-container">
                 <button class="circle-btn"></button>
                 <div class="tooltip">COMING SOON</div>
             </div>
 
-            <div class="icon-container hover-trigger">
+            <div class="icon-container">
                 <button class="circle-btn"></button>
                 <div class="tooltip">COMING SOON</div>
             </div>
@@ -1352,24 +1332,11 @@ function toggleSidebar(forceState = null) {
     }
 }
 
-const hoverTriggers = document.querySelectorAll(".hover-trigger");
-const overlay = document.getElementById("sidebarOverlay");
-
-hoverTriggers.forEach(item => {
-    item.addEventListener("mouseenter", () => {
-        overlay.classList.add("active");
-    });
-    item.addEventListener("mouseleave", () => {
-        overlay.classList.remove("active");
-    });
-});
-
 document.addEventListener("click", (e) => {
     const container = document.getElementById("sidebarContainer");
     
     if (isSidebarOpen && !e.composedPath().includes(container)) {
         toggleSidebar(false);
-        overlay.classList.remove("active");
     }
 
     if (e.target.closest("button") || e.target.closest(".circle-btn") || e.target.closest(".tool-btn") || e.target.closest(".close-btn") || e.target.closest(".search-box") || e.target.closest(".recommended-chip")) {
