@@ -816,7 +816,7 @@ button:hover{
         <div class="sidebar-content" id="sidebarContent">
             <div class="icon-container">
                 <button class="circle-btn" id="soundToggleBtn" onclick="toggleMute()">
-                    🔊
+                    <img id="soundIconImg" src="./images/speaker_unmuted.png" alt="Sound Toggle">
                 </button>
                 <div class="tooltip" id="soundTooltip">mute sounds</div>
             </div>
@@ -1102,14 +1102,14 @@ function playClickSound() {
 
 function toggleMute() {
     isMuted = !isMuted;
-    const btn = document.getElementById("soundToggleBtn");
+    const soundIconImg = document.getElementById("soundIconImg");
     const tooltip = document.getElementById("soundTooltip");
 
     if (isMuted) {
-        btn.textContent = "🔇";
+        soundIconImg.src = "./images/speaker_muted.png";
         tooltip.textContent = "unmute sounds";
     } else {
-        btn.textContent = "🔊";
+        soundIconImg.src = "./images/speaker_unmuted.png";
         tooltip.textContent = "mute sounds";
     }
 }
