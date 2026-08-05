@@ -147,23 +147,23 @@ body{
     color: #aaa;
 }
 
-/* Sidebar & Overlay */
-.sidebar-overlay {
+/* Sidebar & Darken Effect */
+body::before {
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.65);
-    z-index: 8;
+    z-index: 5;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
-.sidebar-overlay.active {
+body.darken-page::before {
     opacity: 1;
-    pointer-events: auto;
 }
 
 .sidebar-container {
@@ -171,6 +171,7 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 10;
 }
 
 .sidebar-content {
@@ -762,8 +763,6 @@ button:hover{
 </head>
 <body>
 
-<div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
-
 <div class="app-header">
     <div class="brand-info">
         <img class="header-icon" src="./images/crafting_table.png" alt="Crafting Table">
@@ -802,12 +801,54 @@ button:hover{
             <div class="tooltip" id="sidebarTooltip">expand sidebar</div>
         </div>
 
-        <div class="sidebar-content">
+        <div class="sidebar-content" id="sidebarContent">
             <div class="icon-container">
                 <button class="circle-btn" id="soundToggleBtn" onclick="toggleMute()">
                     🔊
                 </button>
                 <div class="tooltip" id="soundTooltip">mute sounds</div>
+            </div>
+            <div class="icon-container">
+                <button class="circle-btn">
+                    <img src="./images/spyglass.png" alt="Coming Soon">
+                </button>
+                <div class="tooltip">Coming soon</div>
+            </div>
+            <div class="icon-container">
+                <button class="circle-btn">
+                    <img src="./images/spyglass.png" alt="Coming Soon">
+                </button>
+                <div class="tooltip">Coming soon</div>
+            </div>
+            <div class="icon-container">
+                <button class="circle-btn">
+                    <img src="./images/spyglass.png" alt="Coming Soon">
+                </button>
+                <div class="tooltip">Coming soon</div>
+            </div>
+            <div class="icon-container">
+                <button class="circle-btn">
+                    <img src="./images/spyglass.png" alt="Coming Soon">
+                </button>
+                <div class="tooltip">Coming soon</div>
+            </div>
+            <div class="icon-container">
+                <button class="circle-btn">
+                    <img src="./images/spyglass.png" alt="Coming Soon">
+                </button>
+                <div class="tooltip">Coming soon</div>
+            </div>
+            <div class="icon-container">
+                <button class="circle-btn">
+                    <img src="./images/spyglass.png" alt="Coming Soon">
+                </button>
+                <div class="tooltip">Coming soon</div>
+            </div>
+            <div class="icon-container">
+                <button class="circle-btn">
+                    <img src="./images/spyglass.png" alt="Coming Soon">
+                </button>
+                <div class="tooltip">Coming soon</div>
             </div>
         </div>
     </div>
@@ -1063,7 +1104,6 @@ function toggleMute() {
 
 function toggleSidebar(forceState = null) {
     const container = document.getElementById("sidebarContainer");
-    const overlay = document.getElementById("sidebarOverlay");
     const arrowImg = document.getElementById("sidebarArrowImg");
     const tooltip = document.getElementById("sidebarTooltip");
 
@@ -1071,16 +1111,26 @@ function toggleSidebar(forceState = null) {
 
     if (isOpen) {
         container.classList.add("open");
-        overlay.classList.add("active");
         arrowImg.src = "./images/arrow_up.png";
         tooltip.textContent = "collapse sidebar";
     } else {
         container.classList.remove("open");
-        overlay.classList.remove("active");
         arrowImg.src = "./images/arrow_down.png";
         tooltip.textContent = "expand sidebar";
+        document.body.classList.remove("darken-page");
     }
 }
+
+// Dark effect handlers for sidebar buttons hover
+const sidebarContent = document.getElementById("sidebarContent");
+sidebarContent.addEventListener("mouseenter", () => {
+    if (document.getElementById("sidebarContainer").classList.contains("open")) {
+        document.body.classList.add("darken-page");
+    }
+});
+sidebarContent.addEventListener("mouseleave", () => {
+    document.body.classList.remove("darken-page");
+});
 
 document.addEventListener("click", (e) => {
     if (e.target.closest("button") || e.target.closest(".circle-btn") || e.target.closest(".tool-btn") || e.target.closest(".close-btn") || e.target.closest(".search-box") || e.target.closest(".recommended-chip")) {
