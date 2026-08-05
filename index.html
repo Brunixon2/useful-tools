@@ -7,6 +7,11 @@
 <meta name="description" content="Every info about Minecraft that you would need in one place! Stack Calculator, Nether Coordinates Converter, Create Mod SU stats, formatting codes">
 <link rel="icon" href="./images/icon.png" type="image/png">
 
+<meta property="og:title" content="Useful Tools for Minecraft | By Brunixon.2">
+<meta property="og:description" content="Every info about Minecraft that you would need in one place! Stack Calculator, Nether Coordinates Converter, Create Mod SU stats, formatting codes">
+<meta property="og:image" content="./images/icon.png">
+<meta property="og:type" content="website">
+
 <style>
 *{
     margin:0;
@@ -970,7 +975,7 @@ button:hover{
         <div class="sidebar-content">
             <div class="icon-container">
                 <button class="circle-btn" id="soundToggleBtn" onclick="toggleMute()">
-                    <img id="soundIconImg" src="./images/speaker_unmuted.png" alt="Sound Toggle">
+                    🔊
                 </button>
                 <div class="tooltip" id="soundTooltip">mute sounds</div>
             </div>
@@ -1230,14 +1235,14 @@ function playClickSound() {
 
 function toggleMute() {
     isMuted = !isMuted;
-    const soundIconImg = document.getElementById("soundIconImg");
+    const btn = document.getElementById("soundToggleBtn");
     const tooltip = document.getElementById("soundTooltip");
 
     if (isMuted) {
-        soundIconImg.src = "./images/speaker_muted.png";
+        btn.textContent = "🔇";
         tooltip.textContent = "unmute sounds";
     } else {
-        soundIconImg.src = "./images/speaker_unmuted.png";
+        btn.textContent = "🔊";
         tooltip.textContent = "mute sounds";
     }
 }
