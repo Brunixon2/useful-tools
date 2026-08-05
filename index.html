@@ -215,7 +215,7 @@ body.ios-glass button:not(.equal):not(.clear):hover {
     display: flex;
     align-items: center;
     gap: 12px;
-    z-index: 10;
+    z-index: 20;
 }
 
 .brand-info {
@@ -1382,7 +1382,6 @@ hoverTriggers.forEach(item => {
 document.addEventListener("click", (e) => {
     const container = document.getElementById("sidebarContainer");
     
-    // Close sidebar and overlay if clicking outside of it while it's open
     if (isSidebarOpen && !container.contains(e.target)) {
         toggleSidebar(false);
         overlay.classList.remove("active");
