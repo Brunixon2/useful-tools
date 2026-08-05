@@ -1489,8 +1489,20 @@ const customSearchData = [
 ];
 
 function getSortedSearchData() {
-    // Sorts search items specifically by description length from longest to shortest
-    return [...customSearchData].sort((a, b) => b.description.length - a.description.length);
+    // 1. Pre-calculate the plain-text length for every item (stripping HTML tags like <b>, <code>, <br>)
+    const mapped = customSearchData.map(item => {
+        const plainText = item.description.replace(/<[^>]*>/g, '').trim();
+        return {
+            item: item,
+            textLength: plainText.length
+        };
+    });
+
+    // 2. Sort from longest text length to shortest
+    mapped.sort((a, b) => b.textLength - a.textLength);
+
+    // 3. Return the original items in their new sorted order
+    return mapped.map(entry => entry.item);
 }
 
 function copyToClipboard(text) {
